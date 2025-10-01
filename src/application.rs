@@ -56,7 +56,7 @@ where
     type Message: std::fmt::Debug + Send + 'static;
 
     /// The theme used to draw the [`Application`].
-    type Theme: Default + DefaultStyle;
+    type Theme: DefaultStyle;
 
     /// The [`Executor`] that will run commands and subscriptions.
     ///
@@ -213,7 +213,7 @@ where
             (settings.window.size.height * scale) as u32,
         );
 
-        iced_graphics::Viewport::with_physical_size(physical_size, scale)
+        iced_graphics::Viewport::with_physical_size(physical_size, scale as f32)
     };
 
     let (runtime_tx, runtime_rx) = mpsc::unbounded::<Action<A::Message>>();
@@ -702,7 +702,7 @@ pub fn run_action<A, C>(
             _ => {}
         },
         Action::System(action) => match action {
-            crate::runtime::system::Action::QueryInformation(_channel) => {
+            crate::runtime::system::Action::GetInformation(_channel) => {
                 #[cfg(feature = "system")]
                 {
                     let graphics_info = compositor.fetch_information();
@@ -714,6 +714,7 @@ pub fn run_action<A, C>(
                     });
                 }
             }
+            _ => {}
         },
         Action::Widget(operation) => {
             let mut current_operation = Some(operation);
