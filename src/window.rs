@@ -344,6 +344,9 @@ pub struct WindowSubs<Message> {
     pub on_frame: Option<Arc<dyn Fn() -> Option<Message>>>,
     /// The message to send when the window is about to close.
     pub on_window_will_close: Option<Arc<dyn Fn() -> Option<Message>>>,
+    /// The message to send when the window is resized.
+    /// The function receives the new size in logical pixels.
+    pub on_resize: Option<Arc<dyn Fn(Size) -> Option<Message>>>,
 }
 
 impl<Message> Default for WindowSubs<Message> {
@@ -351,6 +354,7 @@ impl<Message> Default for WindowSubs<Message> {
         WindowSubs {
             on_frame: None,
             on_window_will_close: None,
+            on_resize: None,
         }
     }
 }

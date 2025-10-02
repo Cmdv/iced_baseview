@@ -394,6 +394,18 @@ async fn run_instance<A, C>(
                     needs_update |= matches!(interface_state, user_interface::State::Outdated,);
 
                     for (event, status) in events.drain(..).zip(statuses.into_iter()) {
+                        // Check for resize events and call on_resize callback
+                        if let iced_runtime::core::Event::Window(
+                            iced_runtime::core::window::Event::Resized(size),
+                        ) = &event
+                        {
+                            if let Some(on_resize) = &window_subs.on_resize {
+                                if let Some(message) = on_resize(*size) {
+                                    messages.push(message);
+                                }
+                            }
+                        }
+
                         runtime.broadcast(crate::futures::subscription::Event::Interaction {
                             window: window_id,
                             event,
